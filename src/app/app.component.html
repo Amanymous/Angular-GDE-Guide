@@ -1,18 +1,13 @@
-<!-- <h1>RXJS Observable</h1>
-
-<button id="click-btn" #clickBtn>Click Me</button>
-<app-new-observable></app-new-observable> -->
-<!-- <app-function-observable></app-function-observable> -->
-<!-- <app-cancelling-observable></app-cancelling-observable> -->
-<!-- <app-operators-basics></app-operators-basics> -->
-
-<!-- <h1>distinctUntilChanged</h1>
-<div ngFor="let count of counts">{{ counts }}</div> -->
-<h1>MT Table</h1>
-<app-mt-table
-  [columns]="columns"
-  [data]="data"
-  [isLoading]="isLoading"
-  [pageSize]="10"
-  (cellClick)="onCellClick($event)"
-></app-mt-table>
+<h1>Mt Table</h1>
+<div style="padding: 24px">
+  <app-mt-table
+    [data]="tableData"
+    [columns]="columns"
+    [isExport]="true"
+    [customizable]="true"
+    [isReload]="true"
+    [selectable]="true"
+    (cellClick)="onCellClick($event)"
+    (tableEvent)="onTableEvent($event)"
+  ></app-mt-table>
+</div>
