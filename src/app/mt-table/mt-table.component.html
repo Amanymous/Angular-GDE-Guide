@@ -1,0 +1,47 @@
+<nz-table
+  [nzLoading]="isLoading"
+  [nzData]="_data"
+  [nzScroll]="{ x: 'max-content' }"
+  [(nzPageIndex)]="pagination.selected"
+  [nzTotal]="pagination.total"
+  [(nzPageSize)]="pagination.size"
+  [nzFrontPagination]="!serverPagination"
+  [nzShowSizeChanger]="true"
+  [nzShowQuickJumper]="true"
+  [nzPageSizeOptions]="[5, 10, 20, 30]"
+  [nzShowTotal]="rangeTemplate"
+>
+  <thead>
+    <tr>
+      <th *ngIf="selectable">
+        <input type="checkbox" />
+      </th>
+      <th *ngFor="let col of customColumns; trackBy: trackByValue">
+        <span>{{ col.name }}</span>
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let row of data">
+      <td *ngFor="let column of columns">
+        <!-- Add a click event to pass the row and column -->
+        <span (click)="onRowClick(row, column)">{{ row[column.value] }}</span>
+      </td>
+    </tr>
+  </tbody>
+
+  <tfoot>
+    <tr>
+      <td colspan="100%" class="pagination-controls">
+        <nz-pagination
+          [(nzPageIndex)]="pagination.selected"
+          [(nzPageSize)]="pagination.size"
+          [nzTotal]="pagination.total"
+          [nzPageSizeOptions]="[5, 10, 20]"
+          [nzShowSizeChanger]="true"
+        ></nz-pagination>
+      </td>
+    </tr>
+  </tfoot>
+</nz-table>
