@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -15,10 +15,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { NzAlertModule } from 'ng-zorro-antd/alert';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { Workbook } from 'exceljs';
-import { saveAs } from 'file-saver';
 import { CommonModule } from '@angular/common';
 
 export interface CustomColumn {
@@ -28,14 +25,15 @@ export interface CustomColumn {
   searchKey?: string;
   alignment?: 'left' | 'right' | 'center';
   headerAlignment?: 'left' | 'right' | 'center';
-  width?: number;
+  minWidth?: number;
   clickEvent?: boolean;
-  default?: boolean;
   preventClick?: boolean;
 }
 
 export interface MtCustomColumn extends CustomColumn {
   id?: number;
+  default: boolean;
+  width?: number;
 }
 
 export interface MtTableSort {
@@ -49,13 +47,17 @@ export interface TablePagination {
 }
 
 export interface MtTableEvent {
-  pagination: TablePagination;
-  sort: MtTableSort;
-  search: Record<string, string>;
+  search?: string;
+  sort?: string;
+  pagination: {
+    selected: number;
+    size: number;
+  };
 }
 
 @Component({
-  selector: 'app-mt-table',
+  selector: 'custom-mt-table',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -65,17 +67,15 @@ export interface MtTableEvent {
     NzButtonModule,
     NzLayoutModule,
     NzGridModule,
-    NzSelectModule,
     NzInputModule,
     NzCheckboxModule,
-    NzAlertModule,
     CdkDrag,
     CdkDropList,
   ],
   templateUrl: './mt-table.component.html',
-  styleUrl: './mt-table.component.less',
+  styleUrls: ['./mt-table.component.less'],
 })
-export class MtTableComponent {
+export class CustomMtTableComponent {
   _data: Array<any> = [];
 
   @Input() selectable = true;
@@ -87,11 +87,11 @@ export class MtTableComponent {
   @Input() columns: Array<CustomColumn> = [];
   @Input() set data(value: Array<any>) {
     value?.forEach((x) => (x.checked = false));
-    this._data = value;
+    this._data = value || [];
   }
   @Input() serverPagination = false;
   @Input() pageSize = 10;
-  @Input() exportFileName = 'export';
+  @Input() exportFileName: string = 'export';
 
   @Output() cellClick = new EventEmitter<{
     item: any;
@@ -118,20 +118,20 @@ export class MtTableComponent {
   }
 
   setupColumns() {
-    if (this.columns) {
-      this.customColumns = this.columns.map((x) => ({
-        name: x.name,
-        value: x.value,
-        sortKey: x.sortKey,
-        searchKey: x.searchKey,
-        alignment: x.alignment,
-        headerAlignment: x.headerAlignment,
-        width: x.width,
-        clickEvent: x.clickEvent,
-        default: x.default !== false,
-        preventClick: x.preventClick,
-      }));
-    }
+    // Using dummy data instead of API calls
+    this.customColumns = this.columns.map((x: any, index) => ({
+      id: index + 1,
+      name: x.name,
+      value: x.dataKey || x.value,
+      sortKey: x.sortKey,
+      searchKey: x.searchKey,
+      alignment: x.alignment,
+      headerAlignment: x.headerAlignment,
+      width: x.minWidth,
+      clickEvent: x.clickEvent,
+      default: true,
+      preventClick: x.preventClick,
+    }));
 
     this.resetConfig();
   }
@@ -141,42 +141,55 @@ export class MtTableComponent {
     this.available = this.customColumns.filter((x) => !x.default);
   }
 
+  // Change the search implementation
   onSearch(event: Event | KeyboardEvent, columnKey: string) {
     if (!(event.target instanceof HTMLInputElement)) return;
 
-    const regex = /^[a-zA-Z0-9\s\-_@.#&+]*$/;
-    if (!regex.test(event.target.value)) {
-      // this.notificationSvc.error('Invalid search parameters');
-      return;
+    // Update both search object and searchBoxes array
+    const searchValue = event.target.value;
+    this.search[columnKey] = searchValue;
+
+    // Find the index of the column to update searchBoxes
+    const colIndex = this.customColumns.findIndex(
+      (c) => c.searchKey === columnKey
+    );
+    if (colIndex >= 0) {
+      this.searchBoxes[colIndex] = searchValue;
     }
 
-    if (
-      this.search[columnKey] === event.target.value ||
-      (!this.search[columnKey] && !event.target.value)
-    )
-      return;
-    this.search[columnKey] = event.target.value;
-
-    if (this.pagination.selected === 1) {
-      this.tableEvent.emit(this.makeTableEvent());
-    } else {
-      this.pagination.selected = 1;
-    }
+    // Always emit the event when search changes
+    this.emitTableEvent();
   }
 
-  makeTableEvent(): MtTableEvent {
-    return {
+  // Update the emitTableEvent method
+  emitTableEvent() {
+    // Handle sorting
+    const sortEntry = Object.entries(this.sort).find(
+      ([_, value]) => value !== null
+    );
+    const sortString = sortEntry
+      ? `${sortEntry[0]} ${sortEntry[1] === 'ascend' ? 'asc' : 'desc'}`
+      : '';
+
+    // Handle search - simpler format
+    const searchString = Object.entries(this.search)
+      .filter(([_, value]) => !!value)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(',');
+
+    this.tableEvent.emit({
       pagination: this.pagination,
-      sort: this.sort,
-      search: this.search,
-    };
+      sort: sortString,
+      search: searchString, // Now using simpler format
+    });
   }
 
   onQueryParams(event: NzTableQueryParams) {
-    this.tableEvent.emit(this.makeTableEvent());
+    this.emitTableEvent();
   }
 
   onRefresh() {
+    // Reset all filters and sorting
     for (const key of Object.keys(this.sort)) {
       this.sort[key] = null;
     }
@@ -185,15 +198,12 @@ export class MtTableComponent {
       this.search[key] = '';
     }
 
-    for (const key in this.searchBoxes) {
-      this.searchBoxes[key] = '';
+    for (let i = 0; i < this.searchBoxes.length; i++) {
+      this.searchBoxes[i] = '';
     }
 
-    if (this.pagination.selected === 1) {
-      this.tableEvent.emit(this.makeTableEvent());
-    } else {
-      this.pagination.selected = 1;
-    }
+    if (this.pagination.selected == 1) this.emitTableEvent();
+    else this.pagination.selected = 1;
   }
 
   onCellClick(item: any, column: MtCustomColumn) {
@@ -202,7 +212,7 @@ export class MtTableComponent {
 
   onCheckChange(value: boolean, row: any) {
     this._data.forEach((x) => {
-      if (x !== row) x.checked = false;
+      if (x != row) x.checked = false;
     });
   }
 
@@ -243,15 +253,43 @@ export class MtTableComponent {
         worksheet.columns[index].width = maxColumnLength + 2;
       });
 
-    workbook.xlsx.writeBuffer().then((buffer) => {
+    workbook.xlsx.writeBuffer().then(async (buffer) => {
       const blob = new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
-      saveAs(
-        blob,
-        `${this.exportFileName}-${new Date().toLocaleDateString()}.xlsx`
-      );
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${
+        this.exportFileName
+      }-${new Date().toLocaleDateString()}.xlsx`;
+      link.click();
+      setTimeout(() => {
+        URL.revokeObjectURL(link.href);
+        link.remove();
+      }, 100);
     });
+  }
+
+  onSaveColumnConfig() {
+    this.loading.saveCol = true;
+    // Simulate API call with timeout
+    setTimeout(() => {
+      // this.notificationSvc.success('Columns Saved Successfully');
+      this.loading.saveCol = false;
+    }, 1000);
+  }
+
+  onResetColumnConfig() {
+    this.loading.reset = true;
+    // Simulate API call with timeout
+    setTimeout(() => {
+      for (const key of Object.keys(this.sort)) {
+        this.sort[key] = null;
+      }
+      this.setupColumns();
+      // this.notificationSvc.success('Columns Restored Successfully');
+      this.loading.reset = false;
+    }, 1000);
   }
 
   onCancel() {
