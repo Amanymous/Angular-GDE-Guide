@@ -1,0 +1,55 @@
+<!-- <div>Counter: {{ count() }}</div>
+<div>
+  <button (click)="increment()">Increment</button>
+</div>
+
+<div>
+  <button (click)="decrement()">Decrement</button>
+</div> -->
+<!-- =========================================================== -->
+<!-- <div>
+  <h1>{{ courseName() }}</h1>
+  <button (click)="changeName()">change</button>
+  <button (click)="changeArray()">change</button>
+  <h1>change Array: {{ cityList() }}</h1>
+  <h2>{{ obj() | json }}</h2>
+  <input [(ngModel)]="cityName" />
+  <button (click)="addCity()">Add City</button>
+  <div class="col-4">
+    <label for="">EmpId {{ empObj() | json }}</label>
+    <input type="text" (input)="changeEmpIdValue($event)" />
+    <input type="text" [(ngModel)]="empObj().empId" />
+    <br />
+    <label>Name:</label>
+    <input type="text" (input)="changeFormValue('empName', $event)" />
+    <label>City:</label>
+    <input type="text" (input)="changeFormValue('empCity', $event)" />
+    <label>Pin Code:</label>
+    <input type="text" (input)="changeFormValue('empPinCode', $event)" />
+    <label>State:</label>
+    <input type="text" (input)="changeFormValue('empState', $event)" />
+  </div>
+  <div class="col-4">
+    <label>First Name: {{ fname() }}</label>
+    <input type="text" (input)="updateName(fname, $event)" /><br />
+    <label>Middle Name: {{ midname() }}</label>
+    <input type="text" (input)="updateName(midname, $event)" /><br />
+    <label>Last Name: {{ lname() }}</label>
+    <input type="text" (input)="updateName(lname, $event)" /><br />
+    <label>Full Name: {{ fullName() }}</label>
+    <input type="text" [value]="fullName()" /><br />
+  </div>
+</div> -->
+
+<!-- ===================================================================== -->
+<div>
+  <h1 #titleName>{{ title() }}</h1>
+  <button (click)="handleClose()">Click</button>
+  <h1>Counter: {{ counter() }}</h1>
+  @if(post()){
+  <div>
+    <h2>{{ post().title }}</h2>
+    <p>{{ post().body }}</p>
+  </div>
+  }
+</div>

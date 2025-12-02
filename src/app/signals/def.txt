@@ -1,0 +1,73 @@
+Signals in angular are way to manage state and reactive data flows, similar to how observable
+or behaviorSubject are used in RXJS
+
+However, signals are more lightweight and built directly on angular's reactive system.
+
+What are signals?
+A signal is essentially a wrapper around a value that notifies consumer(function,component or services)
+when ever value changes.
+
+This allow for a reactive data flow, where changes in the signals valuecan be triggered
+updates elsewhere in the app.
+
+
+**Characteristics of Signals:**
+
+They can hold any type of value: primitives like numbers or strings, or more complex structures like objects or arrays.
+
+Signals expose a getter function for reading their current value.
+
+Signals notify Angular when their value is used, allowing Angular to track dependencies automatically. This is useful for creating reactive applications.
+
+**Types of Signals**
+
+There are two primary types of signals in Angular:
+
+**Writable signals:** These can be updated by the developer, meaning you can both read and modify their values.
+
+**Read-only signals:** These only allow reading the value but cannot be modified directly.
+
+conmputed Signals
+Computed signals in angular are a powerful way to derive values from other signals and
+track dependencies between them.Let;s break down the concept of computed signals,
+including their lazy evaluation and memoziaion.
+
+
+Computed signals are read-only signals that derive their values based on other signals. 
+Unlike writable signals, computed signals cannot be directly modified. They are "computed" 
+by a function that uses other signals as input.
+
+To create a computed signal, you use the computed() function and pass a derivation function. 
+Here’s a simple example:
+
+```
+const count: WritableSignal<number> = signal(0);
+const doubleCount: Signal<number> = computed(() => count() * 2);
+```
+
+Whenever the count signal changes, Angular automatically knows that the doubleCount signal 
+needs to update because it depends on count. Angular will trigger re-evaluation of doubleCount
+the next time you access its value.
+
+Lazy evaluation
+Computed signals are lazily evaluated. This means that angular doesnot compute their value util 
+actually read them
+
+
+Memoization
+Computed signals are also memoized, which means they cache their calculated value. Once the value is computed, 
+Angular will store it. If you read the value again without any changes to the dependencies (e.g., count in our case), 
+Angular returns the cached value instead of recomputing it.
+
+When to Use Computed Signals
+Data Transformation: Use computed signals when you need to transform or compute data based on other signals.
+
+Expensive Operations: If the derivation function is expensive (e.g., sorting or filtering large datasets), computed 
+signals are ideal because they ensure that the computation only happens when necessary, and the result is cached.
+
+Read-Only Data: Since computed signals are read-only, they are perfect for data that should not be directly modified 
+by components or services but rather derived from other sources.
+
+
+
+

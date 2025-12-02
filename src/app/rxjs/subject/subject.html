@@ -1,0 +1,13 @@
+<p>subject works!</p>
+
+<div>
+  <form>
+    <select class="dropdown-menu" (change)="onRoleChange($event)">
+      <option value="Guest">Guest</option>
+      <option value="Admin">Admin</option>
+      <option value="User">User</option>
+    </select>
+  </form>
+  <input type="text" [(ngModel)]="userId" placeholder="Enter id" />
+  <button (click)="getUser()">Get Data</button>
+</div>

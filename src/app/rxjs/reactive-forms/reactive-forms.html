@@ -1,0 +1,101 @@
+<div class="container mt-5">
+  <div class="card shadow-sm p-4">
+    <h2 class="mb-4 text-center text-primary fw-bold">
+      Reactive Form with RXJS
+    </h2>
+    <input type="text" class="form-control" [formControl]="searchControl" />
+    <form [formGroup]="myForm" (ngSubmit)="onSubmit()" class="row g-4">
+      <!-- Name -->
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Name</label>
+        <input type="text" class="form-control" formControlName="name" />
+      </div>
+
+      <!-- Subscribe -->
+      <div class="col-md-6 d-flex align-items-end">
+        <div class="form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            formControlName="subscribe"
+          />
+          <label class="form-check-label fw-semibold"
+            >Subscribe to Newsletter</label
+          >
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Email</label>
+        <input type="email" class="form-control" formControlName="email" />
+      </div>
+
+      <!-- Password -->
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password"
+        />
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Confirm Password</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="confirmPassword"
+        />
+        @if(passworMismatch){
+        <div class="text-danger">Passwords do not match</div>
+        }
+      </div>
+
+      <!-- Age -->
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Age</label>
+        <input type="number" class="form-control" formControlName="age" />
+      </div>
+
+      <!-- Driving License -->
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Driving License</label>
+        <input type="text" class="form-control" formControlName="license" />
+      </div>
+
+      <!-- Country -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Country</label>
+        <select class="form-select" formControlName="country">
+          <option value="">Select Country</option>
+        </select>
+      </div>
+
+      <!-- Currency -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Currency</label>
+        <input type="text" class="form-control" formControlName="currency" />
+      </div>
+
+      <!-- Search -->
+      <div class="col-md-8">
+        <label class="form-label fw-semibold">Search</label>
+        <input type="text" class="form-control" formControlName="search" />
+      </div>
+
+      <!-- Submit -->
+      <div class="col-12 text-center mt-3">
+        <button
+          class="btn btn-primary px-5 py-2"
+          type="submit"
+          [disabled]="myForm.invalid"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

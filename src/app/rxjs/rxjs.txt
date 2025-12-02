@@ -1,0 +1,7 @@
+**RXJS Tutorial from Basic to Advance**
+
+1. **ForkJoin**  ⇒  with static Observable | with api call
+2. **switchMap** ⇒  button click | Value Changes Searching api
+3. **mergeMap**  ⇒  nested api calls
+4. **concatMap** ⇒  Nested Api Calls
+5. **exhaustMap** ⇒  Login Api Call
