@@ -1,0 +1,42 @@
+
+In programming, algorithms are step-by-step procedures or formulas for solving problems and performing tasks. Here are some commonly used algorithms and their brief descriptions:
+
+Sorting Algorithms:
+
+Bubble Sort: Repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order.
+Insertion Sort: Builds the final sorted array one item at a time by repeatedly taking elements and inserting them into their correct position.
+Merge Sort: Divides the unsorted list into n sub-lists, each containing one element, and then repeatedly merges sub-lists to produce new sorted sub-lists until there is only one sub-list remaining.
+Quick Sort: Chooses a pivot element and partitions the array into two sub-arrays according to whether elements are less than or greater than the pivot.
+Searching Algorithms:
+
+Binary Search: Searches for a target value within a sorted array by repeatedly dividing the search interval in half.
+Linear Search: Iterates through a list to find a specific element.
+Graph Algorithms:
+
+Depth-First Search (DFS): Explores as far as possible along each branch before backtracking.
+Breadth-First Search (BFS): Explores all the vertices of a graph level by level.
+Dynamic Programming Algorithms:
+
+Fibonacci Sequence using Memoization: Optimizes recursive algorithms by storing results of expensive function calls and returning the cached result when the same inputs occur again.
+Longest Common Subsequence (LCS): Finds the longest subsequence common to two sequences.
+Greedy Algorithms:
+
+Dijkstra's Algorithm: Finds the shortest path between two nodes in a graph.
+Kruskal's Algorithm: Finds a minimum spanning tree for a connected weighted graph.
+String Matching Algorithms:
+
+KMP Algorithm (Knuth-Morris-Pratt): Efficiently searches for occurrences of a "word" within a main "text".
+Hashing Algorithms:
+
+Hash Table: Uses a hash function to map keys to indices, allowing for efficient data retrieval.
+Machine Learning Algorithms:
+
+Linear Regression: Predicts a continuous variable based on one or more predictor variables.
+K-Means Clustering: Divides a set of data points into non-overlapping subsets (clusters).
+Encryption Algorithms:
+
+AES (Advanced Encryption Standard): Symmetric encryption algorithm widely used for securing sensitive data.
+Compression Algorithms:
+
+Huffman Coding: Builds a variable-length code table for encoding a source symbol.
+These are just a few examples, and there are many more algorithms tailored for specific tasks and problem domains. Depending on your programming needs, you might choose or design algorithms that best fit your requirements.
